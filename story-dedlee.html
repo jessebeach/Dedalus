@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DedalusWeb Story</title>
+
+    <script src="http://olado.github.io/doT/doT.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="dedalus.js"></script>
+    <script src="dedalus-web.js"></script>
+    <script src="dedalus-dedlee.js"></script>
+
+    <link rel="stylesheet" href="themes/plain/story.css">
+
+ </head>
+<body>
+    <div id="dedleeSource" style="display:none;">
+        Empty story
+
+        o.dummyObject "An object"
+            "Examine"
+                Something happens... who knows what?!
+
+            "Get"
+                when !story.isInInventory('dummyObject')
+                As you try to get it... It is clear that the inventory works!
+                {{ story.putInInventory('dummyObject'); }}
+
+
+        p.intro
+            You are about to experience the most amazing empty story ever...
+
+        p.dummyPage.first
+            You are in an empty page except for a ((dummyParagraph))paragraph(()).
+
+            <p>Quite unsurprisingly, there is even an {[dummyObject]}object{[]} lying around.</p>
+
+            <p>Looking around with more attention, you notice [[otherPage]]another page[[]]</p>
+
+            pg.dummyParagraph
+                Seiously, What did you expect?
+
+        p.otherPage
+            Plot twist! The story ends abruptly.
+            {{ story.endGame(); }}
+    </div>
+
+    <div id="story">
+    </div>
+
+    <div id="wrapper">
+        <div id="title"></div>
+
+        <div id="inventoryHostWrapper">
+            <h2>Inventory</h2>
+            <div id="inventoryHost"></div>
+        </div>
+
+        <div id="host"></div>
+    </div>
+
+    <div id="interactionHost"></div>
+
+    <div id="undoStageHost"></div>
+
+    <div id="footer">
+        <a id="undoHost" href="#">Undo</a> &bull; <a id="saveHost" href="#">Save</a> &bull; <a id="restoreHost" href="#">Restore</a> &bull; <a id="resetHost" href="#">Reset</a>
+    </div>
+
+    <script>
+        $(function () {
+            new DedalusWeb({
+                dedleeSource      : $('#dedleeSource'),
+                domSource         : $('#story'),
+                domTarget         : $('#host'),
+                titleTarget       : $('#title'),
+                inventoryTarget   : $('#inventoryHost'),
+                interactionTarget : $('#interactionHost'),
+                undoTarget        : $('#undoHost'),
+                undoStageTarget   : $('#undoStageHost'),
+                saveTarget        : $('#saveHost'),
+                restoreTarget     : $('#restoreHost'),
+                resetTarget       : $('#resetHost'),
+            });
+        });
+
+    </script>
+</body>
+</html>
