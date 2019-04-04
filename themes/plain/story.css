@@ -79,13 +79,7 @@ p {
 #inventoryHost {
     overflow: auto;
 }
-#inventoryHostWrapper {
-    width       : 150px;
-    float       : left;
-    margin-left : 50%;
-    left        : 300px;
-    position    : absolute;
-}
+#inventoryHostWrapper {}
 #inventoryHostWrapper h2 {
     font-size     : 18px;
     width         : 150px;
