@@ -75,12 +75,20 @@ var DedalusWeb;
 
         // Make the interaction menu disappear on body click if there is no combination
         // action awaiting for a parameter
-        $('body, html').on('click', function () {
-            if(!self.isCombinationAction()) {
-                self.interactionTarget.hide();
-                self.disactivateCombinationAction();
-            }
-        });
+        var handler = function () {
+          if(!self.isCombinationAction()) {
+            self.interactionTarget.hide();
+            self.disactivateCombinationAction();
+          }
+        };
+        var container = $('body, html');
+
+        container.on('click', handler);
+        container.on('keydown', function (event) {
+          if (event.key === 'Escape') {
+            handler();
+          }
+        })
 
     };
 
@@ -114,14 +122,30 @@ var DedalusWeb;
                     text       = elem.text(),
                     link       = $('<a href="#" ' + elemId + ' ' + targetId + '>' + text + '</a>');
 
-                link.on('click', function (e) {
-                    fn(target, e);
-                    e.stopPropagation();
-                    return false;
+                var handler = function (event) {
+                  fn(target, event);
+                  event.stopPropagation();
+                  return false;
+                };
+
+                link.on('click', handler);
+                link.on('keydown', function (event) {
+                  if (event.key === 'ArrowDown') {
+                    handler(event);
+                  }
                 });
 
-                link.addClass(type);
+                // Apply the correct ARIA semantics based on the type.
+                switch (type) {
+                  case 'object':
+                    link.attr('role', 'button');
+                    link.attr('aria-haspopup', 'true');
+                    break;
+                  default:
+                    break;
+                }
 
+                link.addClass(type);
                 elem.after(link);
                 elem.remove();
 
@@ -165,7 +189,7 @@ var DedalusWeb;
             actions        = object.getActiveActions(),
             clickedElement = $(e.target);
 
-        this.interactionTarget.html('<ul></ul>');
+        this.interactionTarget.html('<ul role="menu"></ul>');
 
         /**
          * Generate a function to be attached to an action menu item that, when
@@ -183,9 +207,13 @@ var DedalusWeb;
                 // action), else execute the action
                 if (action.hasWith) {
                     self.activateCombinationAction();
-                    self.interactionTarget.html('<ul></ul>');
+                    self.interactionTarget.html('<ul role="menu"></ul>');
 
-                    $(self.domTarget).find('a.object').add($(self.inventoryTarget).find('a')).each(function(idx, elem) {
+                    $(self.domTarget)
+                      .find('a.object')
+                      .add($(self.inventoryTarget)
+                      .find('a'))
+                      .each(function(idx, elem) {
                         var element                  = $(elem),
                             link                     = $(element.prop('outerHTML')),
                             targetId                 = link.attr('data-target-id'),
@@ -203,21 +231,34 @@ var DedalusWeb;
                         // or to the current link text
                         link.text(linkText);
 
-                        link.on('click', function () {
-                            self.print(combinationActionContent);
-                            self.interactionTarget.hide();
-                            self.handleInteractions();
-                            self.disactivateCombinationAction();
+                        var handler = function () {
+                          self.print(combinationActionContent);
+                          self.interactionTarget.hide();
+                          self.handleInteractions();
+                          self.disactivateCombinationAction();
+                          clickedElement[0].focus();
+                        };
+
+                        // Mouse clicks.
+                        link.on('click', handler);
+                        // Keyboard interaction.
+                        link.on('keydown', function (event) {
+                          console.log(event);
+                          if (false) {
+                            handler();
+                          }
                         });
 
+
                         self.interactionTarget.find('ul').append(link);
-                        self.interactionTarget.find('ul>a').wrap('<li>');
+                        self.interactionTarget.find('ul>a').wrap('<li role="presentation">');
                     });
                 } else {
                     self.print(action.content);
                     self.interactionTarget.hide();
                     self.handleInteractions();
                     self.disactivateCombinationAction();
+                    clickedElement[0].focus();
                 }
             };
         }
@@ -225,15 +266,15 @@ var DedalusWeb;
         for (action in actions) {
             if (actions.hasOwnProperty(action)) {
                 content = actions[action].content;
-                link    = $('<a href="#" data-target-id="' + target + '">' + action + '</a>');
+                link    = $('<a href="#" data-target-id="' + target + '" role="menuitem">' + action + '</a>');
 
                 link.on('click', makeOnClick(actions[action]));
 
                 // Create the <a> within a <li> within the target <ul>
                 this.interactionTarget.find('ul').append(link);
-                this.interactionTarget.find('ul>a').wrap('<li>');
+                this.interactionTarget.find('ul>a').wrap('<li role="presentation">');
 
-                // Position teh interaction host element under the clicked link
+                // Position th interaction host element under the clicked link
                 // and centered to it
                 this.interactionTarget.css('left', clickedElement.offset().left - (this.interactionTarget.width() / 2) + (clickedElement.width() / 2));
                 this.interactionTarget.css('top',  clickedElement.offset().top + 20);
@@ -241,6 +282,40 @@ var DedalusWeb;
                 this.interactionTarget.show();
             }
         }
+
+        self.interactionTarget.find('a').first().addClass('active').get(0).focus();
+        self.interactionTarget.find('ul').on('keydown', function (event) {
+          var activeIndex = -1;
+          var items = self.interactionTarget.find('a');
+          var nextActiveIndex = -1;
+          function getActiveIndex () {
+            return items.get().reduce(function(acc, item, index) {
+              if (item.classList.contains('active')) {
+                acc = index;
+              }
+              return acc;
+            }, -1);
+          }
+          switch(event.key) {
+            case 'ArrowRight':
+            case 'ArrowDown':
+              activeIndex = getActiveIndex();
+              nextActiveIndex = activeIndex >= 0 ? ((activeIndex + 1) % items.length) : 0;
+              break;
+            case 'ArrowLeft':
+            case 'ArrowUp':
+              activeIndex = getActiveIndex();
+              nextActiveIndex = activeIndex > 0 ? ((activeIndex - 1) % items.length) : items.length - 1;
+              break;
+            default:
+              break;
+          }
+          if (nextActiveIndex > -1) {
+            items[activeIndex].classList.remove('active');
+            items[nextActiveIndex].classList.add('active');
+            items[nextActiveIndex].focus();
+          }
+        });
 
         return actions;
     };

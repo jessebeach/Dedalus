@@ -522,7 +522,7 @@ var Dedalus,
     };
 
     /**
-     * Stop keeping track of an ongoind combination action
+     * Stop keeping track of an ongoing combination action
      */
     Dedalus.prototype.disactivateCombinationAction = function () {
         this._story.combinationActionInProgress = false;
