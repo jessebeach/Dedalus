@@ -191,6 +191,13 @@ var DedalusWeb;
 
         this.interactionTarget.html('<ul role="menu"></ul>');
 
+        var closeInteractionTarget = function () {
+          self.interactionTarget.hide();
+          self.handleInteractions();
+          self.disactivateCombinationAction();
+          clickedElement[0].focus();
+        };
+
         /**
          * Generate a function to be attached to an action menu item that, when
          * clicked, prints cont
@@ -233,10 +240,7 @@ var DedalusWeb;
 
                         var handler = function () {
                           self.print(combinationActionContent);
-                          self.interactionTarget.hide();
-                          self.handleInteractions();
-                          self.disactivateCombinationAction();
-                          clickedElement[0].focus();
+                          closeInteractionTarget();
                         };
 
                         // Mouse clicks.
@@ -255,10 +259,7 @@ var DedalusWeb;
                     });
                 } else {
                     self.print(action.content);
-                    self.interactionTarget.hide();
-                    self.handleInteractions();
-                    self.disactivateCombinationAction();
-                    clickedElement[0].focus();
+                    closeInteractionTarget();
                 }
             };
         }
@@ -306,6 +307,9 @@ var DedalusWeb;
             case 'ArrowUp':
               activeIndex = getActiveIndex();
               nextActiveIndex = activeIndex > 0 ? ((activeIndex - 1) % items.length) : items.length - 1;
+              break;
+            case 'Escape':
+              closeInteractionTarget();
               break;
             default:
               break;
