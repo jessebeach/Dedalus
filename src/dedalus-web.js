@@ -266,7 +266,7 @@ var DedalusWeb;
         for (action in actions) {
             if (actions.hasOwnProperty(action)) {
                 content = actions[action].content;
-                link    = $('<a href="#" data-target-id="' + target + '" role="menuitem" id="' + this.uniqueId() + '">' + action + '</a>');
+                link    = $('<a href="#" data-target-id="' + target + '" role="menuitem" id="' + this.uniqueId() + '" tabindex="-1">' + action + '</a>');
 
                 link.on('click', makeOnClick(actions[action]));
 
