@@ -25,6 +25,8 @@ if (!String.prototype.startsWith) String.prototype.startsWith = function (str) {
 var Dedalus,
     story;
 
+var uniqueId = 0;
+
 (function () {
     "use strict";
     /*jslint evil: true, white: true, nomen: true */
@@ -773,7 +775,8 @@ var Dedalus,
      * If the story defines a <afterEveryPageTurn> script, execute it
      */
     Dedalus.prototype.executeAfterEveryPageTurn  = function () {
-        eval(this._story.afterEveryPageTurn);
+      this._story.domTarget
+      eval(this._story.afterEveryPageTurn);
     };
 
     /**
@@ -854,6 +857,13 @@ var Dedalus,
      * Implementation specific action executed when the story comes to an end
      */
     Dedalus.prototype.endGame = function () {};
+
+    Dedalus.prototype.uniqueId = function () {
+      return (function () {
+        uniqueId += 1;
+        return 'js_' + Number(uniqueId).toString(16);
+      })()
+    };
 
     /**
      * Get the content of a given jQuery element and returns is "as is", without

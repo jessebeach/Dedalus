@@ -181,13 +181,13 @@ var DedalusWeb;
      * @param  {jQuery Event} e      Event generated when clicking on the element
      * @return {JSON}                A dictionary with the available actions
      */
-    DedalusWeb.prototype.interactWith = function (target, e) {
+    DedalusWeb.prototype.interactWith = function (target, event) {
         var action,
             content, link,
             self           = this,
             object         = this.getObject(target),
             actions        = object.getActiveActions(),
-            clickedElement = $(e.target);
+            clickedElement = $(event.target);
 
         this.interactionTarget.html('<ul role="menu"></ul>');
 
@@ -195,7 +195,7 @@ var DedalusWeb;
           self.interactionTarget.hide();
           self.handleInteractions();
           self.disactivateCombinationAction();
-          clickedElement[0].focus();
+          clickedElement.attr('aria-activedescendant', '');
         };
 
         /**
@@ -247,8 +247,7 @@ var DedalusWeb;
                         link.on('click', handler);
                         // Keyboard interaction.
                         link.on('keydown', function (event) {
-                          console.log(event);
-                          if (false) {
+                          if (event.key === 'Escape') {
                             handler();
                           }
                         });
@@ -267,7 +266,7 @@ var DedalusWeb;
         for (action in actions) {
             if (actions.hasOwnProperty(action)) {
                 content = actions[action].content;
-                link    = $('<a href="#" data-target-id="' + target + '" role="menuitem">' + action + '</a>');
+                link    = $('<a href="#" data-target-id="' + target + '" role="menuitem" id="' + this.uniqueId() + '">' + action + '</a>');
 
                 link.on('click', makeOnClick(actions[action]));
 
@@ -284,8 +283,9 @@ var DedalusWeb;
             }
         }
 
-        self.interactionTarget.find('a').first().addClass('active').get(0).focus();
-        self.interactionTarget.find('ul').on('keydown', function (event) {
+        clickedElement.off('keydown');
+        self.interactionTarget.find('a').first().addClass('active');
+        clickedElement.on('keydown', function (event) {
           var activeIndex = -1;
           var items = self.interactionTarget.find('a');
           var nextActiveIndex = -1;
@@ -311,13 +311,18 @@ var DedalusWeb;
             case 'Escape':
               closeInteractionTarget();
               break;
+            case 'Enter':
+              activeIndex = getActiveIndex()
+              if (activeIndex > -1) {
+                console.log(items[activeIndex].getAttribute('id'));
+              }
             default:
               break;
           }
           if (nextActiveIndex > -1) {
             items[activeIndex].classList.remove('active');
             items[nextActiveIndex].classList.add('active');
-            items[nextActiveIndex].focus();
+            clickedElement.attr('aria-activedescendant', items[nextActiveIndex].getAttribute('id'));
           }
         });
 

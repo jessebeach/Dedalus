@@ -37,29 +37,42 @@
         </afterEveryParagraphShown>
 
         <!-- Novel -->
-        <title>Empty story</title>
+        <title>The Five Keys of Emotion</title>
 
         <!-- Objects -->
         <obj id="dummyObject" inventoryName="An object">
             <action id="Examine">
                 Something happens... who knows what?!
             </action>
-
             <action id="Get">
                 <when>!story.isInInventory('dummyObject')</when>
                 As you try to get it... It is clear that the inventory works!
                 {{ story.putInInventory('dummyObject'); }}
             </action>
-
         </obj>
+
+        <!-- Characters -->
+        <character id="starmarsh">
+          <action id="Greet">
+            <p>Well met, good traveler.</p>
+          </action>
+          <action id="Who are you?">
+            <p>I am a traveler, like you.</p>
+          </action>
+        </character>
 
         <!-- Pages -->
         <page id="intro">
-            You are about to experience the most amazing empty story ever...
+          <p>In a time long before ours, a creature of whimsy decided to hide something precious. It never spoke of what it was, but only of what it was worth. And to hear the creature speak of it, it was worth much.</p>
+          <p><turn to="start">Next page</turn></p>
         </page>
 
-        <page id="dummyPage" class="first">
-            You are in an empty page except for a <show paragraph="dummyParagraph">paragraph</show>.
+        <page id="start">
+          <p>This is the story your mother told you as a child. She named the creature <i>Starmarsh</i> and used this story to distract you in moments of tantrum. You know this now, a parent yourself, and keenly aware of the whims of children. But Starmarsh faded from your memory and your mother's disciplinary tactics as you aged.</p>
+          <p>Until today, as you were walking the shortcut through the woods.</p>
+          <p>On the trail ahead, you see a small person approach. The person walks right to you, <interact with="starmarsh">blocking your path</interact>.</p>
+
+        </page>
 
             <p>Quite unsurprisingly, there is even an <interact with="dummyObject">object</interact> lying around.</p>
 
@@ -80,7 +93,7 @@
     <div id="wrapper">
         <h1 id="title"></h1>
 
-        <div id="host" role="log" tabindex="-1"></div>
+        <div id="host" role="log"></div>
 
         <div id="inventoryHostWrapper">
             <h2>Inventory</h2>
