@@ -1,100 +1,76 @@
 html,
 body {
-    font-family      : Georgia, serif;
-    font-size        : 16px;
-    color            : #000;
-    margin           : 0;
-    padding          : 0;
-    height           : 100%;
-    overflow         : hidden;
+  font-family: Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.2;
+  color: black;
+  margin: 0;
+  padding: 0.2em 0.5em;
 }
-a {
-    color: #aaa;
-    text-decoration : none;
-    border-bottom   : 1px #aaa;
+h1, h2, h3 {
+  margin-top: 0;
 }
 p {
-    margin-top    : 15px;
-    margin-bottom : 15px;
+  margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 #wrapper {
-    width          : 600px;
-    margin-left    : auto;
-    margin-right   : auto;
-    padding-bottom : 100px;
-    height         : 100%;
-    padding-top    : 30px;
-    border-left    : 1px solid #aaa;
-    border-right   : 1px solid #aaa;
+  padding: 0;
+  float: left;
+  width: 80%;
+  padding-right: 0.2em;
 }
 
 #story {
-    display: none;
+  display: none;
 }
 
-#host {
-    width            : 500px;
-    margin-left      : auto;
-    margin-right     : auto;
-}
+#title {}
 
-#title {
-    font-size     : 24px;
-    font-weight   : bold;
-    margin-bottom : 10px;
-    width         : 500px;
-    margin-left   : auto;
-    margin-right  : auto;
-    text-align    : center;
+#main {
+  float: left;
+  width: 80%;
+  padding-right: 0.2em;
 }
 
 #interactionHost {
-    position      : absolute;
-    overflow      : auto;
-    margin        : 0;
-    border-bottom : none;
-    height        : 24px;
-    background    : #fff;
-    border        : 1px solid #aaa;
+  position: absolute;
+  overflow: auto;
+  margin: 0;
+  border-bottom: none;
+  height: 1em;
+  background: white;
+  border: 1px solid black;
 }
 #interactionHost .active {
   background-color: yellow;
 }
 #interactionHost ul,
 #inventoryHost ul {
-    display : block;
-    margin  : 0;
-    padding : 0;
+  display: block;
+  margin: 0;
+  padding: 0;
 }
 #interactionHost li,
 #inventoryHost li {
-    float           : left;
-    margin          : 0;
-    padding         : 0;
-    margin-right    : 10px;
-    list-style-type : none;
+  float: left;
+  margin: 0;
+  padding: 0;
+  margin-right: 10px;
+  list-style-type: none;
 }
 #inventoryHost li {
-    text-align: center;
-    width: 150px;
+  text-align: center;
+  width: 150px;
 }
 #inventoryHost {}
 #inventoryHostWrapper {}
-#inventoryHostWrapper h2 {
-    font-size     : 18px;
-    width         : 150px;
-    text-align    : center;
-    margin        : 0;
-    margin-bottom : 20px;
-}
+#inventoryHostWrapper h2 {}
 
-#footer {
-    bottom    : 10px;
-    font-size : 12px;
-    position  : fixed;
-    right     : 20px;
+#footer ul {
+  list-style: none;
 }
 #undoStageHost {
-    display: none;
+  display: none;
 }
