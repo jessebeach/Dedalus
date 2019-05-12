@@ -58,6 +58,9 @@ p {
     background    : #fff;
     border        : 1px solid #aaa;
 }
+#interactionHost .active {
+  background-color: yellow;
+}
 #interactionHost ul,
 #inventoryHost ul {
     display : block;
@@ -76,16 +79,8 @@ p {
     text-align: center;
     width: 150px;
 }
-#inventoryHost {
-    overflow: auto;
-}
-#inventoryHostWrapper {
-    width       : 150px;
-    float       : left;
-    margin-left : 50%;
-    left        : 300px;
-    position    : absolute;
-}
+#inventoryHost {}
+#inventoryHostWrapper {}
 #inventoryHostWrapper h2 {
     font-size     : 18px;
     width         : 150px;

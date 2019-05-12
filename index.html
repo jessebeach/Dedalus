@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <title>DedalusWeb Story</title>
 
-    <script src="doT.min.js"></script>
-    <script src="jquery.min.js"></script>
-    <script src="dedalus.js"></script>
-    <script src="dedalus-web.js"></script>
+    <script src="src/html/plugins/doT.min.js"></script>
+    <script src="src/html/plugins/jquery.min.js"></script>
+    <script src="src/dedalus.js"></script>
+    <script src="src/dedalus-web.js"></script>
 
-    <link rel="stylesheet" href="themes/plain/story.css">
+    <link rel="stylesheet" href="src/html/themes/plain/story.css">
 
  </head>
 <body>
@@ -64,12 +64,10 @@
         <!-- Pages -->
         <page id="intro">
           <p>In a time long before ours, a creature of whimsy decided to hide something precious. It never spoke of what it was, but only of what it was worth. And to hear the creature speak of it, it was worth much.</p>
-          <p><turn to="start">Next page</turn></p>
         </page>
 
-        <page id="start">
-          <p>This is the story your mother told you as a child. She named the creature <i>Starmarsh</i> and used this story to distract you in moments of tantrum. You know this now, a parent yourself, and keenly aware of the whims of children. But Starmarsh faded from your memory and your mother's disciplinary tactics as you aged.</p>
-          <p>Until today, as you were walking the shortcut through the woods.</p>
+        <page id="start" class="first">
+          <p>This is the story your mother told you as a child. She named the creature <i>Starmarsh</i> and used this story to distract you in moments of tantrum. You know this now, a parent yourself, and keenly aware of the whims of children. But Starmarsh faded from your memory as you aged...until today, as you were walking the shortcut through the woods.</p>
           <p>On the trail ahead, you see a small person approach. The person walks right to you, <interact with="starmarsh">blocking your path</interact>.</p>
 
         </page>

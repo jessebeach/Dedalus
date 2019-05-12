@@ -1,5 +1,5 @@
 /**
- * dedalus-web.js v0.9.6
+ * dedalus-web.js v0.9.5
  * 2013, Gustavo Di Pietro
  * Licensed under the GPL license (http://www.gnu.org/licenses/gpl-2.0.html)
 **/
@@ -57,7 +57,6 @@ var DedalusWeb;
         this.undoStageTarget   = options.undoStageTarget;
         this.domTargetParent   = options.domTargetParent;
         this.onPrint           = options.onPrint ? options.onPrint.bind(this) : this.onPrint;
-        this.onInventoryUpdate = options.onInventoryUpdate ? options.onInventoryUpdate.bind(this) : this.onInventoryUpdate;
 
         // Set the utility buttons functionality
         this.undoTarget.on('click', this.undo.bind(this));
@@ -76,12 +75,20 @@ var DedalusWeb;
 
         // Make the interaction menu disappear on body click if there is no combination
         // action awaiting for a parameter
-        $('body, html').on('click', function () {
-            if(!self.isCombinationAction()) {
-                self.interactionTarget.hide();
-                self.disactivateCombinationAction();
-            }
-        });
+        var handler = function () {
+          if(!self.isCombinationAction()) {
+            self.interactionTarget.hide();
+            self.disactivateCombinationAction();
+          }
+        };
+        var container = $('body, html');
+
+        container.on('click', handler);
+        container.on('keydown', function (event) {
+          if (event.key === 'Escape') {
+            handler();
+          }
+        })
 
     };
 
@@ -115,14 +122,30 @@ var DedalusWeb;
                     text       = elem.text(),
                     link       = $('<a href="#" ' + elemId + ' ' + targetId + '>' + text + '</a>');
 
-                link.on('click', function (e) {
-                    fn(target, e);
-                    e.stopPropagation();
-                    return false;
+                var handler = function (event) {
+                  fn(target, event);
+                  event.stopPropagation();
+                  return false;
+                };
+
+                link.on('click', handler);
+                link.on('keydown', function (event) {
+                  if (event.key === 'ArrowDown') {
+                    handler(event);
+                  }
                 });
 
-                link.addClass(type);
+                // Apply the correct ARIA semantics based on the type.
+                switch (type) {
+                  case 'object':
+                    link.attr('role', 'button');
+                    link.attr('aria-haspopup', 'true');
+                    break;
+                  default:
+                    break;
+                }
 
+                link.addClass(type);
                 elem.after(link);
                 elem.remove();
 
@@ -158,15 +181,22 @@ var DedalusWeb;
      * @param  {jQuery Event} e      Event generated when clicking on the element
      * @return {JSON}                A dictionary with the available actions
      */
-    DedalusWeb.prototype.interactWith = function (target, e) {
+    DedalusWeb.prototype.interactWith = function (target, event) {
         var action,
             content, link,
             self           = this,
             object         = this.getObject(target),
             actions        = object.getActiveActions(),
-            clickedElement = $(e.target);
+            clickedElement = $(event.target);
 
-        this.interactionTarget.html('<ul></ul>');
+        this.interactionTarget.html('<ul role="menu"></ul>');
+
+        var closeInteractionTarget = function () {
+          self.interactionTarget.hide();
+          self.handleInteractions();
+          self.disactivateCombinationAction();
+          clickedElement.attr('aria-activedescendant', '');
+        };
 
         /**
          * Generate a function to be attached to an action menu item that, when
@@ -184,9 +214,13 @@ var DedalusWeb;
                 // action), else execute the action
                 if (action.hasWith) {
                     self.activateCombinationAction();
-                    self.interactionTarget.html('<ul></ul>');
+                    self.interactionTarget.html('<ul role="menu"></ul>');
 
-                    $(self.domTarget).find('a.object').add($(self.inventoryTarget).find('a')).each(function(idx, elem) {
+                    $(self.domTarget)
+                      .find('a.object')
+                      .add($(self.inventoryTarget)
+                      .find('a'))
+                      .each(function(idx, elem) {
                         var element                  = $(elem),
                             link                     = $(element.prop('outerHTML')),
                             targetId                 = link.attr('data-target-id'),
@@ -204,21 +238,27 @@ var DedalusWeb;
                         // or to the current link text
                         link.text(linkText);
 
-                        link.on('click', function () {
-                            self.print(combinationActionContent);
-                            self.interactionTarget.hide();
-                            self.handleInteractions();
-                            self.disactivateCombinationAction();
+                        var handler = function () {
+                          self.print(combinationActionContent);
+                          closeInteractionTarget();
+                        };
+
+                        // Mouse clicks.
+                        link.on('click', handler);
+                        // Keyboard interaction.
+                        link.on('keydown', function (event) {
+                          if (event.key === 'Escape') {
+                            handler();
+                          }
                         });
 
+
                         self.interactionTarget.find('ul').append(link);
-                        self.interactionTarget.find('ul>a').wrap('<li>');
+                        self.interactionTarget.find('ul>a').wrap('<li role="presentation">');
                     });
                 } else {
                     self.print(action.content);
-                    self.interactionTarget.hide();
-                    self.handleInteractions();
-                    self.disactivateCombinationAction();
+                    closeInteractionTarget();
                 }
             };
         }
@@ -226,15 +266,15 @@ var DedalusWeb;
         for (action in actions) {
             if (actions.hasOwnProperty(action)) {
                 content = actions[action].content;
-                link    = $('<a href="#" data-target-id="' + target + '">' + action + '</a>');
+                link    = $('<a href="#" data-target-id="' + target + '" role="menuitem" id="' + this.uniqueId() + '">' + action + '</a>');
 
                 link.on('click', makeOnClick(actions[action]));
 
                 // Create the <a> within a <li> within the target <ul>
                 this.interactionTarget.find('ul').append(link);
-                this.interactionTarget.find('ul>a').wrap('<li>');
+                this.interactionTarget.find('ul>a').wrap('<li role="presentation">');
 
-                // Position teh interaction host element under the clicked link
+                // Position th interaction host element under the clicked link
                 // and centered to it
                 this.interactionTarget.css('left', clickedElement.offset().left - (this.interactionTarget.width() / 2) + (clickedElement.width() / 2));
                 this.interactionTarget.css('top',  clickedElement.offset().top + 20);
@@ -242,6 +282,49 @@ var DedalusWeb;
                 this.interactionTarget.show();
             }
         }
+
+        clickedElement.off('keydown');
+        self.interactionTarget.find('a').first().addClass('active');
+        clickedElement.on('keydown', function (event) {
+          var activeIndex = -1;
+          var items = self.interactionTarget.find('a');
+          var nextActiveIndex = -1;
+          function getActiveIndex () {
+            return items.get().reduce(function(acc, item, index) {
+              if (item.classList.contains('active')) {
+                acc = index;
+              }
+              return acc;
+            }, -1);
+          }
+          switch(event.key) {
+            case 'ArrowRight':
+            case 'ArrowDown':
+              activeIndex = getActiveIndex();
+              nextActiveIndex = activeIndex >= 0 ? ((activeIndex + 1) % items.length) : 0;
+              break;
+            case 'ArrowLeft':
+            case 'ArrowUp':
+              activeIndex = getActiveIndex();
+              nextActiveIndex = activeIndex > 0 ? ((activeIndex - 1) % items.length) : items.length - 1;
+              break;
+            case 'Escape':
+              closeInteractionTarget();
+              break;
+            case 'Enter':
+              activeIndex = getActiveIndex()
+              if (activeIndex > -1) {
+                console.log(items[activeIndex].getAttribute('id'));
+              }
+            default:
+              break;
+          }
+          if (nextActiveIndex > -1) {
+            items[activeIndex].classList.remove('active');
+            items[nextActiveIndex].classList.add('active');
+            clickedElement.attr('aria-activedescendant', items[nextActiveIndex].getAttribute('id'));
+          }
+        });
 
         return actions;
     };
@@ -252,8 +335,7 @@ var DedalusWeb;
     DedalusWeb.prototype.updateInventory = function () {
         var i, link, object, inventoryName,
             self  = this,
-            items = this.getInventory(),
-            links = [];
+            items = this.getInventory();
 
         this.inventoryTarget.html('<ul></ul>');
 
@@ -278,18 +360,10 @@ var DedalusWeb;
 
             link.on('click', makeOnClick(items[i]));
 
-            links.push(link);
-        }
-
-        // Call optional custom bevavior
-        links = this.onInventoryUpdate(links);
-
-        for (i = 0; i < links.length; i += 1) {
             // Create the <a> within a <li> within the target <ul>
-            this.inventoryTarget.find('ul').append(links);
+            this.inventoryTarget.find('ul').append(link);
+            this.inventoryTarget.find('ul>a').wrap('<li>');
         }
-
-        this.inventoryTarget.find('ul>a').wrap('<li>');
     };
 
     DedalusWeb.prototype.executePrinting = function (content, turnPage) {
@@ -391,28 +465,8 @@ var DedalusWeb;
         this.inventoryTarget.find('a').off('click').contents().unwrap();
     };
 
-    /**
-     * Called before printing anything. Made to be extended, can be used to
-     * customize the printing behavior.
-     * @param  {doT template} content The content about to be printed
-     * @param  {Boolean}      turn    Whether the printing triggers a page turn
-     *                                or the text is just appended to the current
-     *                                content
-     * @return {Boolean}              If true, execute the normal printing, else
-     *                                let the custom behavior handle the displaye
-     *                                of the new content
-     */
     DedalusWeb.prototype.onPrint = function (content, turn) {
         return true;
-    };
-
-    /**
-     * Function to customize the items to be added to the inventory
-     * @param  {Array<jQuery>} items A list of jQuery items to be added to the inventory
-     * @return {Array<jQuery>}       like @param items, eventually manipulated
-     */
-    DedalusWeb.prototype.onInventoryUpdate = function (items) {
-        return items;
     };
 
 }());
