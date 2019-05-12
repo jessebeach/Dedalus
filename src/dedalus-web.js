@@ -129,7 +129,7 @@ var DedalusWeb;
                 };
 
                 link.on('click', handler);
-                link.on('keydown', function (event) {
+                link.on('keydown.trigger', function (event) {
                   if (event.key === 'ArrowDown') {
                     handler(event);
                   }
@@ -189,12 +189,21 @@ var DedalusWeb;
             actions        = object.getActiveActions(),
             clickedElement = $(event.target);
 
+        if (clickedElement.hasClass('active')) {
+          // Only run this setup once.
+          return;
+        }
+        clickedElement.addClass('active');
+
         this.interactionTarget.html('<ul role="menu"></ul>');
 
         var closeInteractionTarget = function () {
+          self.interactionTarget.find('a').removeClass('active');
           self.interactionTarget.hide();
           self.handleInteractions();
           self.disactivateCombinationAction();
+          clickedElement.removeClass('active');
+          clickedElement.off('keydown.contextual');
           clickedElement.attr('aria-activedescendant', '');
         };
 
@@ -206,7 +215,6 @@ var DedalusWeb;
          */
         function makeOnClick (action) {
             return function () {
-
                 // If the action is of type "use this in combination with something else"
                 // set the current combination action and populate interactionTarget
                 // with possible candidates (all the objects visible in domTarget and
@@ -283,9 +291,11 @@ var DedalusWeb;
             }
         }
 
-        clickedElement.off('keydown');
-        self.interactionTarget.find('a').first().addClass('active');
-        clickedElement.on('keydown', function (event) {
+        var links = self.interactionTarget.find('a');
+        links.removeClass('active');
+        clickedElement.attr('aria-activedescendant', links[0].getAttribute('id'));
+        links.first().addClass('active');
+        clickedElement.on('keydown.contextual', function (event) {
           var activeIndex = -1;
           var items = self.interactionTarget.find('a');
           var nextActiveIndex = -1;
@@ -312,9 +322,10 @@ var DedalusWeb;
               closeInteractionTarget();
               break;
             case 'Enter':
-              activeIndex = getActiveIndex()
+              activeIndex = getActiveIndex();
               if (activeIndex > -1) {
-                console.log(items[activeIndex].getAttribute('id'));
+                event.preventDefault();
+                items[activeIndex].click();
               }
             default:
               break;
