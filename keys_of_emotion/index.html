@@ -40,15 +40,23 @@
         <title>The Five Keys of Emotion</title>
 
         <!-- Objects -->
-        <obj id="dummyObject" inventoryName="An object">
-            <action id="Examine">
-                Something happens... who knows what?!
-            </action>
-            <action id="Get">
-                <when>!story.isInInventory('dummyObject')</when>
-                As you try to get it... It is clear that the inventory works!
-                {{ story.putInInventory('dummyObject'); }}
-            </action>
+        <obj id="key_happy" inventoryName="Key of Happiness">
+          <action id="Examine">
+            The key is heavy and made of steel.
+          </action>
+          <action id="Take">
+            <when>!story.isInInventory('key_happy')</when>
+            Wow, it's heavier than you thought!
+            {{ story.putInInventory('key_happy'); }}
+            You place the key in your jacket pocket.
+          </action>
+          <action id="Decline">
+            <when>!story.isInInventory('key_happy')</when>
+            {{ story.turnTo('ended_before_it_even_starts'); }}
+          </action>
+          <action id="Drop">
+            You start to place the key on the ground, but something stops you. You find that you can't part with it.
+          </action>
         </obj>
 
         <!-- Characters -->
@@ -64,9 +72,6 @@
           </action>
         </character>
 
-        <character id="starmarsh_questions">
-        </character>
-
         <!-- Pages -->
         <page id="intro">
           <p>In a time long before ours, a creature of whimsy decided to hide something precious. It never spoke of what it was, but only of what it was worth. And to hear the creature speak of it, it was worth much.</p>
@@ -77,24 +82,10 @@
           <p>On the trail ahead, you see a small person approach. The person walks right to you, <interact with="starmarsh_meet">blocking your path</interact>.</p>
         </page>
 
-        <obj id="key_happy" inventoryName="Key of Happiness">
-          <action id="Examine">
-            The key is heavy and made of steel.
-          </action>
-          <action id="Take">
-            <when>!story.isInInventory('key_happy')</when>
-            Wow, it's heavier than you thought!
-            {{ story.putInInventory('key_happy'); }}
-            You place the key in your jacket pocket.
-          </action>
-          <action id="Drop">
-            You start to place the key on the ground, but something stops you. You find that you can't part with it.
-          </action>
-        </obj>
-
-        <page id="otherPage">
-            Plot twist! The story ends abruptly.
-            {{ story.endGame(); }}
+        <page id="ended_before_it_even_starts">
+          <p>Thank you, but I think you have mistaken me for someone else.</p>
+          <p>You continue down the path, wondering for a moment who that strange person was. By the time you get to the market, you've already forgotten him.</p>
+          {{ story.endGame(); }}
         </page>
 
     </div>
