@@ -52,13 +52,19 @@
         </obj>
 
         <!-- Characters -->
-        <character id="starmarsh">
+        <character id="starmarsh_meet">
           <action id="Greet">
-            <p>Well met, good traveler.</p>
+            <p>Well met, fellow traveler.</p>
           </action>
           <action id="Who are you?">
             <p>I am a traveler, like you.</p>
           </action>
+          <action id="What do you want?">
+            <p>I would like to return this <interact with="key_happy">key</interact> to you. It is yours.</p>
+          </action>
+        </character>
+
+        <character id="starmarsh_questions">
         </character>
 
         <!-- Pages -->
@@ -68,18 +74,23 @@
 
         <page id="start" class="first">
           <p>This is the story your mother told you as a child. She named the creature <i>Starmarsh</i> and used this story to distract you in moments of tantrum. You know this now, a parent yourself, and keenly aware of the whims of children. But Starmarsh faded from your memory as you aged...until today, as you were walking the shortcut through the woods.</p>
-          <p>On the trail ahead, you see a small person approach. The person walks right to you, <interact with="starmarsh">blocking your path</interact>.</p>
-
+          <p>On the trail ahead, you see a small person approach. The person walks right to you, <interact with="starmarsh_meet">blocking your path</interact>.</p>
         </page>
 
-            <p>Quite unsurprisingly, there is even an <interact with="dummyObject">object</interact> lying around.</p>
-
-            <p>Looking around with more attention, you notice <turn to="otherPage">another page</turn></p>
-
-            <paragraph id="dummyParagraph">
-                Seiously, What did you expect?
-            </paragraph>
-        </page>
+        <obj id="key_happy" inventoryName="Key of Happiness">
+          <action id="Examine">
+            The key is heavy and made of steel.
+          </action>
+          <action id="Take">
+            <when>!story.isInInventory('key_happy')</when>
+            Wow, it's heavier than you thought!
+            {{ story.putInInventory('key_happy'); }}
+            You place the key in your jacket pocket.
+          </action>
+          <action id="Drop">
+            You start to place the key on the ground, but something stops you. You find that you can't part with it.
+          </action>
+        </obj>
 
         <page id="otherPage">
             Plot twist! The story ends abruptly.

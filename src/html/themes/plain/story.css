@@ -36,10 +36,8 @@ p {
 
 #interactionHost {
   position: absolute;
-  overflow: auto;
   margin: 0;
   border-bottom: none;
-  height: 1em;
   background: white;
   border: 1px solid black;
 }
@@ -48,22 +46,16 @@ p {
 }
 #interactionHost ul,
 #inventoryHost ul {
-  display: block;
   margin: 0;
   padding: 0;
 }
 #interactionHost li,
 #inventoryHost li {
-  float: left;
   margin: 0;
   padding: 0;
-  margin-right: 10px;
-  list-style-type: none;
+  list-style: none;
 }
-#inventoryHost li {
-  text-align: center;
-  width: 150px;
-}
+#inventoryHost li {}
 #inventoryHost {}
 #inventoryHostWrapper {}
 #inventoryHostWrapper h2 {}
