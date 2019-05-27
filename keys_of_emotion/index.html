@@ -16,6 +16,7 @@
   <div id="story">
 
     <initscript>
+      {{ story.iAmATraveller = true; }}
     </initscript>
 
     <beforeEveryThing>
@@ -37,7 +38,7 @@
     </afterEveryParagraphShown>
 
     <!-- Novel -->
-    <title>The Five Keys of Emotion</title>
+    <title>The Key of Happiness</title>
 
     <!-- Objects -->
     <obj id="key_happy" inventoryName="Key of Happiness">
@@ -48,11 +49,11 @@
         <when>!story.isInInventory('key_happy')</when>
         Wow, it's heavier than you thought!
         {{ story.putInInventory('key_happy'); }}
-        You place the key in your jacket pocket. When you look up, Starmarsh is gone. This unnerves you a bit so you decide to <turn to="town">continue to town</turn> with a fast pace, your heart beating quickly in your chest.
+        You place the key in your jacket pocket. When turn your attention back to the trail, Starmarsh is gone. This unnerves you a bit so you decide to <turn to="town">continue to town</turn> with a fast pace, your heart beating quickly in your chest.
       </action>
       <action id="Decline">
         <when>!story.isInInventory('key_happy')</when>
-        {{ story.turnTo('ended_before_it_even_starts'); }}
+        No thank you, I don't need this key. You hear a noise and turn your head to toward it. When you turn your attention back to the trail, Starmarsh is gone. This unnerves you a bit so you decide to <turn to="town">continue to town</turn> with a fast pace, your heart beating quickly in your chest.
       </action>
       <action id="Drop">
         You start to place the key on the ground, but something stops you. You find that you can't part with it.
@@ -62,12 +63,30 @@
     <!-- Characters -->
     <character id="starmarsh_meet">
       <action id="Greet">
-        <p>Well met, fellow traveler.</p>
+        <p>Well met.</p>
       </action>
       <action id="Who are you?">
+        <when>!story.hasMetStarmarsh</when>
         <p>I am a traveler, like you.</p>
+        {{ story.hasMetStarmarsh = true; }}
+      </action>
+      <action id="What do you mean that you are a traveler?">
+        <when>story.hasMetStarmarsh</when>
+        <p>Like you, I am compelled to seek out the unknown.</p>
+        {{ story.hasAskedAboutTravelling = true; }}
+      </action>
+      <action id="I am not a traveler">
+        <when>story.hasAskedAboutTravelling && story.iAmATraveller</when>
+        <p>Oh, I am mistaken then. Apologies.</p>
+        {{ story.iAmATraveller = false; }}
+      </action>
+      <action id="Wait! I am a traveler!">
+        <when>!story.iAmATraveller</when>
+        <p>Yes, I am sure of it.</p>
+        {{ story.iAmATraveller = true; }}
       </action>
       <action id="What do you want?">
+        <when>!story.isInInventory('key_happy') && story.iAmATraveller</when>
         <p>I would like to return this <interact with="key_happy">key</interact> to you. It is yours.</p>
       </action>
     </character>
@@ -78,8 +97,20 @@
     </page>
 
     <page id="start" class="first">
-      <p>This is the story your mother told you as a child. She named the creature <i>Starmarsh</i> and used this story to distract you in moments of tantrum. You know this now, a parent yourself, and keenly aware of the whims of children. But Starmarsh faded from your memory as you aged...until today, as you were walking the shortcut through the woods.</p>
-      <p>On the trail ahead, you see a small person approach. The person walks right to you, <interact with="starmarsh_meet">blocking your path</interact>.</p>
+      <p>This is the story your mother told you as a child. She named the creature <i>Starmarsh</i> and used this story to distract you in moments of tantrum. You know this now, a parent yourself, and keenly aware of the whims of children. But Starmarsh faded from your memory as you aged...until today, <turn to="starmarsh">as you were walking the shortcut through the woods.</turn></p>
+    </page>
+
+    <page id="starmarsh">
+      <p>As you are waling along the trail, a small person approaches you. The person walks right to you, <interact with="starmarsh_meet">blocking your path</interact>.</p>
+    </page>
+
+    <page id="town">
+      <p>You approach your usual tea shop, but right where the entrance door usually is, there is instead another door. It is made of heavy wood. You try opening it, but it is locked shut. </p>
+      {{? story.isInInventory('key_happy') }}
+        <p></p>
+      {{??}}
+        <p>Over to the side, you hear someone enter the tea shop and you realize that the shop door has moved. Do you <turn to="">ignore this bizarre situation and go get some tea</turn> or do you <turn to="starmarsh">go back to the woods and find that strange person</turn>?</p>
+      {{?}}
     </page>
 
     <page id="ended_before_it_even_starts">
@@ -94,7 +125,7 @@
       <h1 id="title"></h1>
       <div id="host" role="log" aria-live="assertive"></div>
     </div>
-    <div id="inventoryHostWrapper" role="complementary">
+    <div id="inventoryHostWrapper" role="complementary" aria-live="polite">
       <h2>Inventory</h2>
       <div id="inventoryHost"></div>
     </div>
