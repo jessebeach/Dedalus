@@ -295,6 +295,10 @@ var DedalusWeb;
         links.removeClass('active');
         clickedElement.attr('aria-activedescendant', links[0].getAttribute('id'));
         links.first().addClass('active');
+        // clickedElement.on('blur', function () {
+        //   // Pure timing hack. Yuck.
+        //   setTimeout(closeInteractionTarget, 100);
+        // });
         clickedElement.on('keydown.contextual', function (event) {
           var activeIndex = -1;
           var items = self.interactionTarget.find('a');
