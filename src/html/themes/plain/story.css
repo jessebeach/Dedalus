@@ -1,8 +1,8 @@
 html,
 body {
   font-family: Georgia, serif;
-  font-size: 1rem;
-  line-height: 1.2;
+  font-size: 1.2rem;
+  line-height: 1.4;
   color: black;
   margin: 0;
   padding: 0.2em 0.5em;
@@ -46,7 +46,7 @@ ul {
   margin: 0;
   border-bottom: none;
   background: white;
-  border: 1px solid black;
+  border: 5px solid black;
 }
 #interactionHost .active {
   background-color: yellow;
@@ -54,17 +54,19 @@ ul {
 #interactionHost ul,
 #inventoryHost ul {
   margin: 0;
-  padding: 0;
+  padding: 0.2em 0.2em 0.2em 1.5em;
 }
 #interactionHost li,
 #inventoryHost li {
   margin: 0;
   padding: 0;
-  list-style: none;
+  list-style: bullet;
 }
 #inventoryHost li {}
 #inventoryHost {}
-#inventoryHostWrapper {}
+#inventoryHostWrapper {
+  overflow: hidden;
+}
 #inventoryHostWrapper h2 {}
 
 #footer ul {
