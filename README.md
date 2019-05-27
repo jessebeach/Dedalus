@@ -231,7 +231,7 @@ The true power of Dedalus relies on the possibilities offered by the template en
 <paragraph id="doctorScrewDriver">
     {{? story.isMatsushitaASickSerialKiller() }}
         You already killed too many people! Remember? {{= story.numberOfKills;}} of those poor souls!
-    {??}
+    {{??}}
         You'd better leave it off, or the Doctor might get angry.
         {{story.triedToTakeTheScrewDriver = true;}}
     {{?}}
