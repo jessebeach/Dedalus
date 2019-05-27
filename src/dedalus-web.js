@@ -284,7 +284,7 @@ var DedalusWeb;
 
                 // Position the interaction host element under the clicked link
                 // and centered to it
-                this.interactionTarget.css('left', clickedElement.offset().left - (this.interactionTarget.width() / 2) + (clickedElement.width() / 2));
+                this.interactionTarget.css('left', Math.max(clickedElement.offset().left - (this.interactionTarget.width() / 2) + (clickedElement.width() / 2), 10));
                 this.interactionTarget.css('top',  clickedElement.offset().top + 20);
 
                 this.interactionTarget.show();
