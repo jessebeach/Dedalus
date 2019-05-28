@@ -258,6 +258,7 @@ var DedalusWeb;
                       link.attr('role', 'menuitem');
                       link.attr('id', self.uniqueId());
                       link.removeAttr('aria-activedescendant');
+                      link.removeAttr('aria-haspopup');
                       if (idx === 0) {
                         link.addClass('active');
                       }
@@ -265,7 +266,9 @@ var DedalusWeb;
                       self.interactionTarget.find('ul>a').wrap('<li role="presentation">');
                     });
 
-                    clickedElement.attr('aria-activedescendant', withObjects[0].getAttribute('id'));
+                    setTimeout(function () {
+                      clickedElement.attr('aria-activedescendant', self.interactionTarget.find('a').first().attr('id'));
+                    }, 250);
                   }
                   else {
                     closeInteractionTarget();
@@ -301,10 +304,6 @@ var DedalusWeb;
         links.removeClass('active');
         clickedElement.attr('aria-activedescendant', links[0].getAttribute('id'));
         links.first().addClass('active');
-        clickedElement.on('blur', function () {
-          // Pure timing hack. Yuck.
-          setTimeout(closeInteractionTarget, 100);
-        });
         clickedElement.on('keydown.contextual', function (event) {
           var activeIndex = 0;
           var items = self.interactionTarget.find('a');
@@ -333,14 +332,14 @@ var DedalusWeb;
               break;
             case 'Enter':
               activeIndex = getActiveIndex();
-              if (activeIndex > -1) {
+              if (activeIndex > -1 && items[activeIndex]) {
                 event.preventDefault();
                 items[activeIndex].click();
               }
             default:
               break;
           }
-          if (nextActiveIndex > -1) {
+          if (nextActiveIndex > -1 && items[activeIndex]) {
             items[activeIndex].classList.remove('active');
             items[nextActiveIndex].classList.add('active');
             clickedElement.attr('aria-activedescendant', items[nextActiveIndex].getAttribute('id'));
