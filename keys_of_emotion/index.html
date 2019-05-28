@@ -58,10 +58,24 @@
       <action id="Drop">
         You start to place the key on the ground, but something stops you. You find that you can't part with it.
       </action>
+      <action id="Use with">
+        <when>story.isInInventory('key_happy')</when>
+        <with id="door">
+          <p>The key you got from the traveler on the trail slides into the lock and turns smoothly. You hear the locking mechanism disengage and the door cracks open just slightly. A light push would open it wide.</p>
+          {{ story.isDoorOpen = true; }}
+          {{ story.disable('doorInteraction'); }}
+          <p>Do you <turn to="end_teahouse">ignore this bizarre situation and go get some tea</turn> or do you try the <turn to="end_earl_gray">go through this new door</turn>?</p>
+        </with>
+        <p>It would probably work better on a door.</p>
+      </action>
+    </obj>
+
+    <obj id="door" inventoryName="Strange door">
+      <action id="Open">The door is locked.</action>
     </obj>
 
     <!-- Characters -->
-    <character id="starmarsh_meet">
+    <character id="starmarsh_meet" inventoryName="Starmarsh">
       <action id="Greet">
         <p>Well met.</p>
       </action>
@@ -100,22 +114,36 @@
       <p>This is the story your mother told you as a child. She named the creature <i>Starmarsh</i> and used this story to distract you in moments of tantrum. You know this now, a parent yourself, and keenly aware of the whims of children. But Starmarsh faded from your memory as you aged...until today, <turn to="starmarsh">as you were walking the shortcut through the woods.</turn></p>
     </page>
 
-    <page id="starmarsh">
-      <p>As you are waling along the trail, a small person approaches you. The person walks right to you, <interact with="starmarsh_meet">blocking your path</interact>.</p>
+    <page id="starmarsh" inventoryName="Starmarsh">
+      <p>As you are waling along the trail, a small person approaches you. <interact with="starmarsh_meet">The person</interact> walks right to you, blocking your path.</p>
     </page>
 
     <page id="town">
-      <p>You approach your usual tea shop, but right where the entrance door usually is, there is instead another door. It is made of heavy wood. You try opening it, but it is locked shut. </p>
+      <p>You approach your usual tea shop, but right where the entrance door usually is, there is instead a new and strange <interact with="door" id="doorInteraction">door</interact>. It is made of heavy wood. Over to the side, you hear someone enter the tea shop and you realize that the shop door has moved. How weird!</p>
       {{? story.isInInventory('key_happy') }}
-        <p></p>
+        {{? story.isDoorOpen }}
+          <p>Do you <turn to="end_teahouse">ignore this bizarre situation and go get some tea</turn> or do you try the <turn to="end_earl_gray">go through this new door</turn>?</p>
+        {{??}}
+          <p>You remember the key in your pocket. Do you <turn to="end_teahouse">ignore this bizarre situation and go get some tea</turn> or do you try the <interact with="key_happy">key</interact> that the traveler gave you in this strange door?</p>
+        {{?}}
       {{??}}
-        <p>Over to the side, you hear someone enter the tea shop and you realize that the shop door has moved. Do you <turn to="">ignore this bizarre situation and go get some tea</turn> or do you <turn to="starmarsh">go back to the woods and find that strange person</turn>?</p>
+        <p>Do you <turn to="end_teahouse">ignore this bizarre situation and go get some tea</turn> or do you <turn to="starmarsh">go back to the woods and find that strange person</turn>?</p>
       {{?}}
     </page>
 
-    <page id="ended_before_it_even_starts">
-      <p>Thank you, but I think you have mistaken me for someone else.</p>
-      <p>You continue down the path, wondering for a moment who that strange person was. By the time you get to the market, you've already forgotten him.</p>
+    <page id="door_open">
+
+    </page>
+
+    <page id="end_earl_gray">
+      <p>The door glides open. The air is warm and damp with steam. You smell fragrant tang of Earl Gray brewing. The barista greets you by name. You are about to ask for your usual cup, but then pause. No, today you will try something new. "Something new today", you tell the barista. And a madeleine if you have them.</p>
+      <p>The end</p>
+      {{ story.endGame(); }}
+    </page>
+
+    <page id="end_teahouse">
+      <p>You walk into the tea shop, as you do most mornings. It smells of delicate leaves. The air is damp with steam. You have already forgotten about the traveler you met on the trail on your way here.</p>
+      <p>The end</p>
       {{ story.endGame(); }}
     </page>
   </div>
