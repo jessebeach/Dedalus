@@ -221,52 +221,58 @@ var DedalusWeb;
                 // those in the inventory, exluding the object calling the combination
                 // action), else execute the action
                 if (action.hasWith) {
-                    self.activateCombinationAction();
-                    self.interactionTarget.html('<ul role="menu"></ul>');
+                  self.activateCombinationAction();
+                  self.interactionTarget.html('<ul role="menu"></ul>');
 
-                    $(self.domTarget)
-                      .find('a.object')
-                      .add($(self.inventoryTarget)
-                      .find('a'))
-                      .each(function(idx, elem) {
-                        var element                  = $(elem),
-                            link                     = $(element.prop('outerHTML')),
-                            targetId                 = link.attr('data-target-id'),
-                            object                   = self.getObject(targetId),
-                            elemText                 = link.text(),
-                            linkText                 = object.inventoryName || elemText,
-                            combinationActionContent = action['with'][targetId] || action.content;
+                  var withObjects = $(self.domTarget)
+                    .find('a.object')
+                    .add($(self.inventoryTarget)
+                    .find('a'));
+                  if (withObjects.length > 0) {
+                    withObjects.each(function(idx, elem) {
+                      var element = $(elem);
+                      var link = $(element.prop('outerHTML'));
+                      var targetId = link.attr('data-target-id');
+                      var object = self.getObject(targetId);
+                      var elemText = link.text();
+                      var linkText = object.inventoryName || elemText;
+                      var combinationActionContent = action['with'][targetId] || action.content;
 
-                        // Skip current object, it cannot be associated with itself!
-                        if (targetId === target) {
-                            return;
-                        }
+                      // Skip current object, it cannot be associated with itself!
+                      if (targetId === target) {
+                        return;
+                      }
 
-                        // Set the text of the new <a> to inventoryName of the object
-                        // or to the current link text
-                        link.text(linkText);
+                      // Set the text of the new <a> to inventoryName of the object
+                      // or to the current link text
+                      link.text(linkText);
 
-                        var handler = function () {
-                          self.print(combinationActionContent);
-                          closeInteractionTarget();
-                        };
+                      var handler = function () {
+                        self.print(combinationActionContent);
+                        closeInteractionTarget();
+                      };
 
-                        // Mouse clicks.
-                        link.on('click', handler);
-                        // Keyboard interaction.
-                        link.on('keydown', function (event) {
-                          if (event.key === 'Escape') {
-                            handler();
-                          }
-                        });
+                      // Mouse clicks.
+                      link.on('click', handler);
 
-
-                        self.interactionTarget.find('ul').append(link);
-                        self.interactionTarget.find('ul>a').wrap('<li role="presentation">');
+                      link.attr('role', 'menuitem');
+                      link.attr('id', self.uniqueId());
+                      link.removeAttr('aria-activedescendant');
+                      if (idx === 0) {
+                        link.addClass('active');
+                      }
+                      self.interactionTarget.find('ul').append(link);
+                      self.interactionTarget.find('ul>a').wrap('<li role="presentation">');
                     });
-                } else {
-                    self.print(action.content);
+
+                    clickedElement.attr('aria-activedescendant', withObjects[0].getAttribute('id'));
+                  }
+                  else {
                     closeInteractionTarget();
+                  }
+                } else {
+                  self.print(action.content);
+                  closeInteractionTarget();
                 }
             };
         }
@@ -295,12 +301,12 @@ var DedalusWeb;
         links.removeClass('active');
         clickedElement.attr('aria-activedescendant', links[0].getAttribute('id'));
         links.first().addClass('active');
-        // clickedElement.on('blur', function () {
-        //   // Pure timing hack. Yuck.
-        //   setTimeout(closeInteractionTarget, 100);
-        // });
+        clickedElement.on('blur', function () {
+          // Pure timing hack. Yuck.
+          setTimeout(closeInteractionTarget, 100);
+        });
         clickedElement.on('keydown.contextual', function (event) {
-          var activeIndex = -1;
+          var activeIndex = 0;
           var items = self.interactionTarget.find('a');
           var nextActiveIndex = -1;
           function getActiveIndex () {
@@ -309,7 +315,7 @@ var DedalusWeb;
                 acc = index;
               }
               return acc;
-            }, -1);
+            }, 0);
           }
           switch(event.key) {
             case 'ArrowRight':
