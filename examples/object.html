@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A locked box</title>
+
+    <script src="../src/html/plugins/doT.min.js"></script>
+    <script src="../src/html/plugins/jquery.min.js"></script>
+    <script src="../src/dedalus.js"></script>
+    <script src="../src/dedalus-web.js"></script>
+
+    <link rel="stylesheet" href="../src/html/themes/plain/story.css">
+
+ </head>
+<body>
+  <div id="story">
+
+    <initscript>
+    </initscript>
+
+    <beforeEveryThing>
+    </beforeEveryThing>
+
+    <beforeEveryPageTurn>
+    </beforeEveryPageTurn>
+
+    <beforeEveryParagraphShown>
+    </beforeEveryParagraphShown>
+
+    <afterEveryThing>
+    </afterEveryThing>
+
+    <afterEveryPageTurn>
+    </afterEveryPageTurn>
+
+    <afterEveryParagraphShown>
+    </afterEveryParagraphShown>
+
+    <!-- Novel -->
+    <title>A locked box</title>
+
+    <!-- Objects -->
+    <obj id="box" inventoryName="Ornate box">
+      <action id="Examine">
+        The box is covered in ornate carvings and symbols. There is a keyhole on one side.
+      </action>
+      <action id="Shake">
+        Something rattles inside the box, but it is unclear what it is.
+      </action>
+      <action id="Heft">
+        The box is light.
+      </action>
+      <action id="Open">
+        The lid of the box is locked shut.
+      </action>
+      <action id="Take">
+        {{ story.putInInventory('box'); }}
+        The box disappears into the bag of holding.
+      </action>
+    </obj>
+
+    <!-- Characters -->
+
+    <!-- Pages -->
+    <page id="intro">
+      <p>The room contains a table covered in various items.</p>
+    </page>
+
+    <page id="start" class="first">
+      <p>Our hero walks up to the table and notices a <interact with="box">box</interact>.</p>
+    </page>
+  </div>
+
+  <div id="wrapper">
+    <div id="main" role="main">
+      <h1 id="title"></h1>
+      <div id="host" role="log" aria-live="assertive"></div>
+    </div>
+    <div id="inventoryHostWrapper" role="complementary">
+      <h2>Inventory</h2>
+      <div id="inventoryHost" role="log" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div id="footer" role="navigation">
+    <h2>Controls</h2>
+    <ul>
+      <li><a id="undoHost" href="#">Undo</a></li>
+      <li><a id="saveHost" href="#">Save</a></li>
+      <li><a id="restoreHost" href="#">Restore</a></li>
+      <li><a id="reseteHost" href="#">Reset</a></li>
+    </ul>
+  </div>
+
+  <div id="interactionHost" tabindex="-1"></div>
+
+  <div id="undoStageHost" tabindex="-1"></div>
+
+  <script>
+    $(function () {
+      new DedalusWeb({
+        domSource         : $('#story'),
+        domTarget         : $('#host'),
+        titleTarget       : $('#title'),
+        inventoryTarget   : $('#inventoryHost'),
+        interactionTarget : $('#interactionHost'),
+        undoTarget        : $('#undoHost'),
+        undoStageTarget   : $('#undoStageHost'),
+        saveTarget        : $('#saveHost'),
+        restoreTarget     : $('#restoreHost'),
+        resetTarget       : $('#reseteHost'),
+      });
+    });
+  </script>
+</body>
+</html>
