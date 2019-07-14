@@ -1,6 +1,0 @@
-<snippet>
-    <content><![CDATA[story.getNumActionsPerformedInPage($1)]]></content>
-    <tabTrigger>nactp</tabTrigger>
-    <scope>text.html.basic.dedalus</scope>
-    <description>Dedalus getNumActionsPerformedInPage</description>
-</snippet>

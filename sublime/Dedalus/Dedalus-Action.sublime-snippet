@@ -1,8 +1,0 @@
-<snippet>
-    <content><![CDATA[<action id="${1:ActionName}">
-    ${2}
-</action>]]></content>
-    <tabTrigger>action</tabTrigger>
-    <scope>text.html.basic.dedalus</scope>
-    <description>Dedalus action</description>
-</snippet>
