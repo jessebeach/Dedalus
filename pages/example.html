@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>The Storm</title>
+
+    <script src="../src/html/plugins/doT.min.js"></script>
+    <script src="../src/html/plugins/jquery.min.js"></script>
+    <script src="../src/dedalus.js"></script>
+    <script src="../src/dedalus-web.js"></script>
+
+    <link rel="stylesheet" href="../src/html/themes/plain/story.css">
+
+ </head>
+<body>
+  <div id="story">
+
+    <initscript>
+    </initscript>
+
+    <beforeEveryThing>
+    </beforeEveryThing>
+
+    <beforeEveryPageTurn>
+    </beforeEveryPageTurn>
+
+    <beforeEveryParagraphShown>
+    </beforeEveryParagraphShown>
+
+    <afterEveryThing>
+    </afterEveryThing>
+
+    <afterEveryPageTurn>
+    </afterEveryPageTurn>
+
+    <afterEveryParagraphShown>
+    </afterEveryParagraphShown>
+
+    <!-- Novel -->
+    <title>The Storm</title>
+
+    <!-- Objects -->
+
+    <!-- Characters -->
+
+    <!-- Pages -->
+    <page id="intro">
+      <p>Dark clouds build on the horizon.</p>
+    </page>
+
+    <page id="start" class="first">
+      <p>Our hero can sense something is about to happen. She can feel the energy in the air. Suddenly <turn to="next">a great clap of thunder shook the house</turn>.</p>
+    </page>
+
+    <page id="next">
+      <p>As the sound of thunder echoed and withdrew in the distance, our hero noticed a small box on the table that had not been there a moment ago. The box is covered in ornate carvings and symbols.</p>
+    </page>
+  </div>
+
+  <div id="wrapper">
+    <div id="main" role="main">
+      <h1 id="title"></h1>
+      <div id="host" role="log" aria-live="assertive"></div>
+    </div>
+    <div id="inventoryHostWrapper" role="complementary">
+      <h2>Inventory</h2>
+      <div id="inventoryHost" role="log" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div id="footer" role="navigation">
+    <h2>Controls</h2>
+    <ul>
+      <li><a id="undoHost" href="#">Undo</a></li>
+      <li><a id="saveHost" href="#">Save</a></li>
+      <li><a id="restoreHost" href="#">Restore</a></li>
+      <li><a id="reseteHost" href="#">Reset</a></li>
+    </ul>
+  </div>
+
+  <div id="interactionHost" tabindex="-1"></div>
+
+  <div id="undoStageHost" tabindex="-1"></div>
+
+  <script>
+    $(function () {
+      new DedalusWeb({
+        domSource         : $('#story'),
+        domTarget         : $('#host'),
+        titleTarget       : $('#title'),
+        inventoryTarget   : $('#inventoryHost'),
+        interactionTarget : $('#interactionHost'),
+        undoTarget        : $('#undoHost'),
+        undoStageTarget   : $('#undoStageHost'),
+        saveTarget        : $('#saveHost'),
+        restoreTarget     : $('#restoreHost'),
+        resetTarget       : $('#reseteHost'),
+      });
+    });
+  </script>
+</body>
+</html>

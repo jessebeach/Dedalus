@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A wizard</title>
+
+    <script src="../src/html/plugins/doT.min.js"></script>
+    <script src="../src/html/plugins/jquery.min.js"></script>
+    <script src="../src/dedalus.js"></script>
+    <script src="../src/dedalus-web.js"></script>
+
+    <link rel="stylesheet" href="../src/html/themes/plain/story.css">
+
+ </head>
+<body>
+  <div id="story">
+
+    <initscript>
+    </initscript>
+
+    <beforeEveryThing>
+    </beforeEveryThing>
+
+    <beforeEveryPageTurn>
+    </beforeEveryPageTurn>
+
+    <beforeEveryParagraphShown>
+    </beforeEveryParagraphShown>
+
+    <afterEveryThing>
+    </afterEveryThing>
+
+    <afterEveryPageTurn>
+    </afterEveryPageTurn>
+
+    <afterEveryParagraphShown>
+    </afterEveryParagraphShown>
+
+    <!-- Novel -->
+    <title>A wizard</title>
+
+    <!-- Objects -->
+
+    <!-- Characters -->
+    <character id="wizard" inventoryName="Bellatrix">
+      <action id="Who are you?">
+        I am one of the old ones. Some call me a wizard.
+      </action>
+      <action id="What is your name?">
+        It is an old name. Bellatrix.
+      </action>
+      <action id="Where are you from?">
+        No place that you know.
+      </action>
+      <action id="Can you perform magic?">
+        Magic. Ha! Magic is just tricks. I can alter the nature of reality itself!
+      </action>
+      <action id="Will you join me on my journey?">
+        I was always meant to. Our paths have met for a reason.
+       </action>
+    </character>
+
+    <!-- Pages -->
+    <page id="intro">
+      <p>Ines had been traveling for days and had not seen another person on the path.</p>
+    </page>
+
+    <page id="start" class="first">
+      <p>Just as Ines thought that she was traveling in the wrong direction, a <interact with="wizard">person</interact> approached her on the path.</p>
+    </page>
+  </div>
+
+  <div id="wrapper">
+    <div id="main" role="main">
+      <h1 id="title"></h1>
+      <div id="host" role="log" aria-live="assertive"></div>
+    </div>
+    <div id="inventoryHostWrapper" role="complementary">
+      <h2>Inventory</h2>
+      <div id="inventoryHost" role="log" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <div id="footer" role="navigation">
+    <h2>Controls</h2>
+    <ul>
+      <li><a id="undoHost" href="#">Undo</a></li>
+      <li><a id="saveHost" href="#">Save</a></li>
+      <li><a id="restoreHost" href="#">Restore</a></li>
+      <li><a id="reseteHost" href="#">Reset</a></li>
+    </ul>
+  </div>
+
+  <div id="interactionHost" tabindex="-1"></div>
+
+  <div id="undoStageHost" tabindex="-1"></div>
+
+  <script>
+    $(function () {
+      new DedalusWeb({
+        domSource         : $('#story'),
+        domTarget         : $('#host'),
+        titleTarget       : $('#title'),
+        inventoryTarget   : $('#inventoryHost'),
+        interactionTarget : $('#interactionHost'),
+        undoTarget        : $('#undoHost'),
+        undoStageTarget   : $('#undoStageHost'),
+        saveTarget        : $('#saveHost'),
+        restoreTarget     : $('#restoreHost'),
+        resetTarget       : $('#reseteHost'),
+      });
+    });
+  </script>
+</body>
+</html>
